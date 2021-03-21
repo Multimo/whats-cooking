@@ -15,6 +15,7 @@ module.exports = {
   },
   devServer: {
     contentBase: dist,
+    historyApiFallback: true,
   },
   plugins: [
     new CopyPlugin([path.resolve(__dirname, "static")]),

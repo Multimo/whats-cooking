@@ -1,5 +1,6 @@
 #![recursion_limit = "1024"]
 use wasm_bindgen::prelude::*;
+// use wasm_logger::prelude::*;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -16,6 +17,7 @@ mod routes;
 
 #[wasm_bindgen(start)]
 pub fn run_app() -> Result<(), JsValue> {
+    wasm_logger::init(wasm_logger::Config::default());
     yew::start_app::<app::App>();
     Ok(())
 }

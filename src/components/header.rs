@@ -1,3 +1,4 @@
+use crate::routes::{AppAnchor, AppRoutes};
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 pub struct Header {}
@@ -22,8 +23,16 @@ impl Component for Header {
 
     fn view(&self) -> Html {
         html! {
-          <header class="container m-auto p-4 text-left">
+          <header class="container m-auto p-4 text-left flex flex-row justify-between items-center">
             <h1 class="text-2xl text-secondary font-bold mb-1">{"Whats Cooking"}</h1>
+            <nav>
+                <AppAnchor classes="mr-2" route=AppRoutes::RecipesPage >
+                    {"Recipes"}
+                </AppAnchor>
+                <AppAnchor route=AppRoutes::IngredientsPage>
+                    {"Ingredient"}
+                </AppAnchor>
+            </nav>
           </header>
         }
     }

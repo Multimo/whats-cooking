@@ -1,4 +1,4 @@
-use crate::routes::{AppRoutes, Home};
+use crate::routes::{AppRoutes, FetchServiceExample, Home, IngredientsPage, RecipesPage};
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use yew_router::switch::Permissive;
 use yew_router::{route::Route, router::Router as YewRouter};
@@ -22,11 +22,16 @@ impl Component for Router {
     }
 
     fn view(&self) -> Html {
+        log::info!("Some info");
         html! {
             <YewRouter<AppRoutes>
                 render=YewRouter::render(|switch: AppRoutes| {
+                    log::info!("Some switch: {:?}", switch);
                     match switch {
                         AppRoutes::Home => html!{<Home />},
+                        AppRoutes::FetchServiceExample => html!{<FetchServiceExample />},
+                        AppRoutes::RecipesPage => html!{<RecipesPage />},
+                        AppRoutes::IngredientsPage => html!{<IngredientsPage />},
                         AppRoutes::NotFound(Permissive(None)) => html!{"Page not found"},
                         AppRoutes::NotFound(Permissive(Some(missed_route))) => html!{format!("Page '{}' not found", missed_route)}
                     }

@@ -24,7 +24,9 @@ impl Component for Header {
     fn view(&self) -> Html {
         html! {
           <header class="container m-auto p-4 text-left flex flex-row justify-between items-center">
-            <h1 class="text-2xl text-secondary font-bold mb-1">{"Whats Cooking"}</h1>
+            <AppAnchor classes="mr-2" route=AppRoutes::Home >
+                <h1 class="text-2xl text-secondary font-bold mb-1">{"Whats Cooking"}</h1>
+            </AppAnchor>
             <nav>
                 <AppAnchor classes="mr-2" route=AppRoutes::RecipesPage >
                     {"Recipes"}

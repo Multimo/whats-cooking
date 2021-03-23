@@ -1,3 +1,4 @@
+use crate::components::{Ingredient, NewIngredientsForm};
 use serde::Deserialize;
 use yew::{
     format::{Json, Nothing},
@@ -9,16 +10,17 @@ use yew::{
     },
     Component, ComponentLink, Html, ShouldRender,
 };
+
 #[derive(Deserialize, Debug)]
 enum States {
     Initial,
     Fetching,
-    Success { ingredients: Vec<Ingredient> },
+    Success { ingredients: Vec<IIngredient> },
     Error(String),
 }
 
 #[derive(Deserialize, Debug)]
-pub struct Ingredient {
+pub struct IIngredient {
     pub id: i32,
     pub name: String,
     pub name_scientific: Option<String>,
@@ -29,7 +31,7 @@ pub struct Ingredient {
 
 #[derive(Deserialize, Debug)]
 struct IngredientResponse {
-    response: Vec<Ingredient>,
+    response: Vec<IIngredient>,
 }
 
 pub struct IngredientsPage {
@@ -40,7 +42,7 @@ pub struct IngredientsPage {
 
 pub enum Msg {
     FetchIngredients,
-    FetchIngredientsSuccess(Vec<Ingredient>),
+    FetchIngredientsSuccess(Vec<IIngredient>),
     FetchIngredientsError(anyhow::Error),
 }
 
@@ -141,7 +143,7 @@ impl Component for IngredientsPage {
                     </div>
                 </div>
                 <div class="md:flex">
-                    <button onclick=self.link.callback(|_| Msg::FetchIngredients)>{"Hello"}</button>
+                   <NewIngredientsForm />
                 </div>
 
                 {match &self.state {
@@ -151,9 +153,13 @@ impl Component for IngredientsPage {
                         ingredients
                     } => ingredients
                     .iter()
-                    .map(|ingredient: &Ingredient| {
+                    .map(|ingredient: &IIngredient| {
+                        let group = match &ingredient.food_group {
+                            Some(v) => &v,
+                            None => "."
+                        };
                         html! {
-                           <h1>{&ingredient.name}</h1>
+                            <Ingredient name=&ingredient.name group=group />
                         }
                     })
                     .collect(),

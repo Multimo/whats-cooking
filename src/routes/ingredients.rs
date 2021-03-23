@@ -13,8 +13,8 @@ use yew::{
 enum States {
     Initial,
     Fetching,
-    Success,
-    Error,
+    Success { ingredients: Vec<Ingredient> },
+    Error(String),
 }
 
 #[derive(Deserialize, Debug)]
@@ -32,11 +32,8 @@ struct IngredientResponse {
     response: Vec<Ingredient>,
 }
 
-// #[derive(Deserialize)]
 pub struct IngredientsPage {
     state: States,
-    ingredients: Option<Vec<Ingredient>>,
-    error: Option<String>,
     fetch_task: Option<FetchTask>,
     link: ComponentLink<Self>,
 }
@@ -54,8 +51,6 @@ impl Component for IngredientsPage {
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             state: States::Initial,
-            error: None,
-            ingredients: None,
             fetch_task: None,
             link,
         }
@@ -96,31 +91,27 @@ impl Component for IngredientsPage {
             States::Fetching => match msg {
                 Msg::FetchIngredientsSuccess(data) => {
                     log::info!("in success data {:?}", data);
-                    self.ingredients = Some(data);
-                    self.state = States::Success;
+                    self.state = States::Success { ingredients: data };
                     true
                 }
                 Msg::FetchIngredientsError(_error) => {
                     log::info!("got found error {:?}", _error);
                     let error = String::from("There was an error");
-                    self.state = States::Error;
-                    self.error = Some(error);
+                    self.state = States::Error(error);
                     self.fetch_task = None;
                     true
                 }
                 _ => false,
             },
-            States::Error => match msg {
+            States::Success { ingredients: _ } => false,
+            States::Error(_) => match msg {
                 Msg::FetchIngredients => {
-                    // do the fetch
-                    self.error = None;
                     self.state = States::Initial;
-                    Msg::FetchIngredients;
+                    self.link.send_message(Msg::FetchIngredients);
                     true
                 }
                 _ => false,
             },
-            States::Success => false,
         };
         true
     }
@@ -129,33 +120,16 @@ impl Component for IngredientsPage {
         false
     }
 
-    fn view(&self) -> Html {
-        let ingredients = match &self.ingredients {
-            Some(ingredients) => ingredients
-                .iter()
-                .map(|ingredient: &Ingredient| {
-                    html! {
-                       <h1>{&ingredient.name}</h1>
-                    }
-                })
-                .collect(),
-            None => html! {
-               <h1>{"hallo"}</h1>
-            },
-        };
+    fn rendered(&mut self, first_render: bool) {
+        if first_render == true {
+            self.link.send_message(Msg::FetchIngredients)
+        }
+    }
 
+    fn view(&self) -> Html {
         html! {
             <div>
-                // <h2>{match &self.error {
-                //     Some(e) => e,
-                //     None => &String::from("None")
-                // }}</h2>
-                <h1>{"Ingredients page"} {match self.state {
-                    States::Initial => "Initial",
-                    States::Fetching => "Fetching",
-                    States::Success => "Success",
-                    States::Error => "Error"
-                }}</h1>
+                <h1>{"Ingredients page"} </h1>
                 <div class="md:flex">
                     <div class="md:flex-shrink-0">
                         <img class="rounded-lg md:w-56" src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=448&q=80" width="448" height="299" alt="Woman paying for a purchase" />
@@ -170,7 +144,21 @@ impl Component for IngredientsPage {
                     <button onclick=self.link.callback(|_| Msg::FetchIngredients)>{"Hello"}</button>
                 </div>
 
-                {ingredients}
+                {match &self.state {
+                    States::Initial => html! { <h1> {"Initial"} </h1> },
+                    States::Fetching => html! { <h1> {"Fetching"} </h1>},
+                    States::Success {
+                        ingredients
+                    } => ingredients
+                    .iter()
+                    .map(|ingredient: &Ingredient| {
+                        html! {
+                           <h1>{&ingredient.name}</h1>
+                        }
+                    })
+                    .collect(),
+                    States::Error(error) => html! { <h1>{error}</h1> }
+                }}
             </div>
         }
     }

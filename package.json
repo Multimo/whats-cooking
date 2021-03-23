@@ -6,6 +6,7 @@
     "build": "rimraf dist pkg && webpack",
     "build-css": "tailwindcss build css/index.css -o static/styles.css",
     "start": "rimraf dist pkg && webpack-dev-server --open -d",
+    "dev": "rimraf dist pkg && webpack-dev-server --open -d",
     "test": "cargo test && wasm-pack test --headless"
   },
   "devDependencies": {

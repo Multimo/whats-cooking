@@ -22,11 +22,9 @@ impl Component for Router {
     }
 
     fn view(&self) -> Html {
-        log::info!("Some info");
         html! {
             <YewRouter<AppRoutes>
                 render=YewRouter::render(|switch: AppRoutes| {
-                    log::info!("Some switch: {:?}", switch);
                     match switch {
                         AppRoutes::Home => html!{<Home />},
                         AppRoutes::FetchServiceExample => html!{<FetchServiceExample />},

@@ -2,7 +2,7 @@ use yew::{html, Children, Component, ComponentLink, Html, Properties, ShouldRend
 
 pub struct Ingredient {
     props: Props,
-    isOpen: bool,
+    is_open: bool,
     link: ComponentLink<Self>,
 }
 
@@ -15,6 +15,8 @@ pub struct Props {
     #[prop_or_default]
     pub name: String,
     pub group: String,
+    #[prop_or_default]
+    pub description: Option<String>,
 }
 
 impl Component for Ingredient {
@@ -25,13 +27,13 @@ impl Component for Ingredient {
         Self {
             props,
             link,
-            isOpen: false,
+            is_open: false,
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::Toggle => self.isOpen = !self.isOpen,
+            Msg::Toggle => self.is_open = !self.is_open,
         }
         true
     }
@@ -41,14 +43,62 @@ impl Component for Ingredient {
     }
 
     fn view(&self) -> Html {
+        let food_emoji = match &self.props.group[..] {
+            "Fruits" => "🍌",
+            "Vegetables" => "🥦",
+            "Herbs and Spices" => "🧂",
+            "Nuts" => "🥜",
+            "Cereals and cereal products" => "🌾",
+            "Gourds" => "🥒",
+            "Soy" => "🌾",
+            "Pulses" => "🌾",
+            "Aquatic foods" => "🐟",
+            "Animal foods" => "🥩",
+            "Beverages" => "🍹",
+            "Confectioneries" => "🍬",
+            "Baking goods" => "🍰",
+            "Milk and milk products" => "🧀",
+            "Fats and oils" => "🛢",
+            "Cocoa and cocoa products" => "🍫",
+            "Dishes" => "🍴",
+            "Snack foods" => "🍱",
+            "Teas" => "☕",
+            "Eggs" => "🥚",
+            "Baby foods" => "👶",
+            "Coffee and coffee products" => "☕",
+            _ => "❌",
+        };
+
+        let handle_toggle = self.link.callback(|_| Msg::Toggle);
+
         html! {
-          <div class="container m-auto p-4" onclick=self.link.callback(|_| Msg::Toggle)>
-            <h1>{&self.props.name}</h1>
-            <p>{&self.props.group}</p>
-            {match &self.isOpen {
-                true => "Opened",
-                false => "Closed"
+          <div class="container flex flex-col m-auto p-2" >
+            <div class="flex">
+              <div class="mr-2">{food_emoji}</div>
+              <h3 class="p4">{&self.props.name}</h3>
+            </div>
+            {match &self.is_open {
+                true => html! {
+                    <div class="p2">
+                        <p>{"type: "}{&self.props.group}</p>
+                        <p>{"description: "}{match &self.props.description {
+                            Some(s) => s,
+                            None => ""
+                        }}</p>
+                    </div>
+                },
+                false => html! {
+                    <div>{""}</div>
+                }
             }}
+            <div>
+                <button onclick=handle_toggle>
+                    {match &self.is_open {
+                        true => "👆",
+                        false => "👇"
+                    }}
+                </button>
+            </div>
           </div>
         }
     }

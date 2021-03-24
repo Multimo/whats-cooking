@@ -96,10 +96,10 @@ impl Component for IngredientsPage {
                     self.state = States::Success { ingredients: data };
                     true
                 }
-                Msg::FetchIngredientsError(_error) => {
-                    log::info!("got found error {:?}", _error);
-                    let error = String::from("There was an error");
-                    self.state = States::Error(error);
+                Msg::FetchIngredientsError(error) => {
+                    log::info!("got found error {:?}", error);
+                    // let error = String::from("There was an error");
+                    self.state = States::Error(error.to_string());
                     self.fetch_task = None;
                     true
                 }
@@ -159,11 +159,15 @@ impl Component for IngredientsPage {
                             None => "."
                         };
                         html! {
-                            <Ingredient name=&ingredient.name group=group />
+                            <Ingredient
+                                name=&ingredient.name
+                                group=group
+                                description=&ingredient.decription
+                            />
                         }
                     })
                     .collect(),
-                    States::Error(error) => html! { <h1>{error}</h1> }
+                    States::Error(error) => html! { <h1 onclick=self.link.callback(|_| Msg::FetchIngredients)>{error}</h1> }
                 }}
             </div>
         }

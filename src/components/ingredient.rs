@@ -87,7 +87,7 @@ impl Component for Ingredient {
             </div>
             {match &self.is_open {
                 true => html! {
-                    <div class="p2">
+                    <div class="mt-2 space-y-1">
                         <p>{"type: "}{&self.props.group}</p>
                         <p>{"description: "}{match &self.props.description {
                             Some(s) => s,

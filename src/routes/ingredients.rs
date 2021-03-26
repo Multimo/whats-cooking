@@ -8,7 +8,7 @@ use yew::{
         fetch::{FetchTask, Request, Response},
         FetchService,
     },
-    Component, ComponentLink, Html, ShouldRender,
+    Component, ComponentLink, Html, InputData, ShouldRender,
 };
 
 #[derive(Deserialize, Debug)]
@@ -36,6 +36,7 @@ struct IngredientResponse {
 
 pub struct IngredientsPage {
     state: States,
+    current_filter: String,
     fetch_task: Option<FetchTask>,
     link: ComponentLink<Self>,
 }
@@ -44,6 +45,7 @@ pub enum Msg {
     FetchIngredients,
     FetchIngredientsSuccess(Vec<IIngredient>),
     FetchIngredientsError(anyhow::Error),
+    UpdateFilter(String),
 }
 
 impl Component for IngredientsPage {
@@ -53,6 +55,7 @@ impl Component for IngredientsPage {
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             state: States::Initial,
+            current_filter: String::from(""),
             fetch_task: None,
             link,
         }
@@ -105,7 +108,13 @@ impl Component for IngredientsPage {
                 }
                 _ => false,
             },
-            States::Success { ingredients: _ } => false,
+            States::Success { ingredients: _ } => match msg {
+                Msg::UpdateFilter(value) => {
+                    self.current_filter = value;
+                    true
+                }
+                _ => false,
+            },
             States::Error(_) => match msg {
                 Msg::FetchIngredients => {
                     self.state = States::Initial;
@@ -129,6 +138,10 @@ impl Component for IngredientsPage {
     }
 
     fn view(&self) -> Html {
+        let handle_change = self
+            .link
+            .callback(|event: InputData| Msg::UpdateFilter(event.value));
+
         html! {
             <div>
                 <h1>{"Ingredients page"} </h1>
@@ -146,6 +159,13 @@ impl Component for IngredientsPage {
                    <NewIngredientsForm />
                 </div>
 
+                <div class="flex flex-col my-3 h-auto mb-5">
+                    <label for="search" class="abblock mb-2 text-sm text-gray-600 dark:text-gray-400">
+                        {"Filter Ingredients"}
+                    </label>
+                    <input id="search" type="text" name="search" class="px-2 py-2 border-2 rounded-md border-gray-200" value=&self.current_filter oninput=handle_change />
+                </div>
+
                 {match &self.state {
                     States::Initial => html! { <h1> {"Initial"} </h1> },
                     States::Fetching => html! { <h1> {"Fetching"} </h1>},
@@ -153,6 +173,19 @@ impl Component for IngredientsPage {
                         ingredients
                     } => ingredients
                     .iter()
+                    .filter(|ingredient: &&IIngredient| {
+                        if &self.current_filter == "" {
+                            return true;
+                        }
+
+                        let name = ingredient.name.to_lowercase();
+                        if name.contains(&self.current_filter.to_lowercase()) {
+                            log::info!("filter: {}, name: {}", &self.current_filter, name);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
                     .map(|ingredient: &IIngredient| {
                         let group = match &ingredient.food_group {
                             Some(v) => &v,

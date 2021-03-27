@@ -1,5 +1,6 @@
 use crate::components::{Ingredient, NewIngredientsForm};
 use serde::Deserialize;
+
 use yew::{
     format::{Json, Nothing},
     html,
@@ -46,6 +47,12 @@ pub enum Msg {
     FetchIngredientsSuccess(Vec<IIngredient>),
     FetchIngredientsError(anyhow::Error),
     UpdateFilter(String),
+}
+
+impl IngredientsPage {
+    fn debounce_filter_update(&self, new_filter: String) {
+        self.link.send_message(Msg::UpdateFilter(new_filter))
+    }
 }
 
 impl Component for IngredientsPage {
@@ -138,7 +145,7 @@ impl Component for IngredientsPage {
     }
 
     fn view(&self) -> Html {
-        let handle_change = self
+        let handle_change = &self
             .link
             .callback(|event: InputData| Msg::UpdateFilter(event.value));
 
@@ -173,29 +180,29 @@ impl Component for IngredientsPage {
                         ingredients
                     } => ingredients
                     .iter()
-                    .filter(|ingredient: &&IIngredient| {
-                        if &self.current_filter == "" {
-                            return true;
-                        }
-
-                        let name = ingredient.name.to_lowercase();
-                        if name.contains(&self.current_filter.to_lowercase()) {
-                            log::info!("filter: {}, name: {}", &self.current_filter, name);
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    })
                     .map(|ingredient: &IIngredient| {
                         let group = match &ingredient.food_group {
                             Some(v) => &v,
                             None => "."
                         };
+
+                        // let contains_name = ingredient.name.to_lowercase().contains(&self.current_filter.to_lowercase());
+                        // let contains_group =  group.to_lowercase().contains(&self.current_filter.to_lowercase());
+
+                        // if (contains_name) {
+                        //     log::info!("{} is contained in cn {}", &self.current_filter, ingredient.name)
+                        // }
+                        // if (contains_group) {
+                        //     log::info!("{} is contained in group: {}", &self.current_filter, group)
+                        // }
+                        // let show = contains_name || contains_group;
+
                         html! {
                             <Ingredient
                                 name=&ingredient.name
                                 group=group
                                 description=&ingredient.decription
+                                current_filter=&self.current_filter
                             />
                         }
                     })

@@ -1,4 +1,14 @@
+use serde::Deserialize;
 use yew::{html, Children, Component, ComponentLink, Html, Properties, ShouldRender};
+
+#[derive(Deserialize, Debug)]
+pub struct IIngredient {
+    pub name: String,
+    pub decription: Option<String>,
+    pub food_group: Option<String>,
+    pub name_scientific: Option<String>,
+    pub food_subgroup: Option<String>,
+}
 
 pub struct NewIngredientsForm {}
 
@@ -30,6 +40,7 @@ impl Component for NewIngredientsForm {
         html! {
           <div class="container m-auto p-4">
             <h1>{"hit ehre"}</h1>
+
           </div>
         }
     }

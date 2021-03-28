@@ -1,4 +1,4 @@
-use crate::components::{Ingredient, NewIngredientsForm};
+use crate::components::{Ingredient, Input, NewIngredientsForm};
 use serde::Deserialize;
 
 use yew::{
@@ -167,10 +167,13 @@ impl Component for IngredientsPage {
                 </div>
 
                 <div class="flex flex-col my-3 h-auto mb-5">
-                    <label for="search" class="abblock mb-2 text-sm text-gray-600 dark:text-gray-400">
-                        {"Filter Ingredients"}
-                    </label>
-                    <input id="search" type="text" name="search" class="px-2 py-2 border-2 rounded-md border-gray-200" value=&self.current_filter oninput=handle_change />
+                    <Input
+                        name="search"
+                        id="search"
+                        label="Filter Ingredients"
+                        input_type="text"
+                        on_change=handle_change
+                    />
                 </div>
 
                 {match &self.state {

@@ -75,7 +75,7 @@ impl Component for Ingredient {
           <div class="container flex flex-col m-auto p-2" >
             <div class="flex justify-between">
                 <div class="flex">
-                    <div class="mr-2 w-6">{food_emoji}</div>
+                    <div class="mr-2 w-6 text-center">{food_emoji}</div>
                     <h3 class="p4">{&self.props.name}</h3>
                 </div>
                 <button onclick=handle_toggle>

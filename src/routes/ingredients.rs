@@ -180,29 +180,36 @@ impl Component for IngredientsPage {
                         ingredients
                     } => ingredients
                     .iter()
-                    .map(|ingredient: &IIngredient| {
+                    .filter(|ingredient: &&IIngredient| {
+                        if &self.current_filter == "" || &self.current_filter.len() <= &3 {
+                            return true;
+                        }
                         let group = match &ingredient.food_group {
                             Some(v) => &v,
                             None => "."
                         };
 
-                        // let contains_name = ingredient.name.to_lowercase().contains(&self.current_filter.to_lowercase());
-                        // let contains_group =  group.to_lowercase().contains(&self.current_filter.to_lowercase());
+                        let contains_name: bool = ingredient.name.to_lowercase().contains(&self.current_filter.to_lowercase());
+                        let contains_group: bool =  group.to_lowercase().contains(&self.current_filter.to_lowercase());
 
-                        // if (contains_name) {
-                        //     log::info!("{} is contained in cn {}", &self.current_filter, ingredient.name)
-                        // }
-                        // if (contains_group) {
-                        //     log::info!("{} is contained in group: {}", &self.current_filter, group)
-                        // }
-                        // let show = contains_name || contains_group;
-
+                        if (contains_name) {
+                            log::info!("{} is contained in cn {}", &self.current_filter.len(), ingredient.name)
+                        }
+                        if (contains_group) {
+                            log::info!("{} is contained in group: {}", &self.current_filter, group)
+                        }
+                        return contains_name || contains_group;
+                    })
+                    .map(|ingredient: &IIngredient| {
                         html! {
                             <Ingredient
+                                key={ingredient.id}
                                 name=&ingredient.name
-                                group=group
+                                group=match &ingredient.food_group {
+                                    Some(v) => &v,
+                                    None => "."
+                                }
                                 description=&ingredient.decription
-                                current_filter=&self.current_filter
                             />
                         }
                     })

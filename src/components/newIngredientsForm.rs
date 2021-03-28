@@ -40,7 +40,7 @@ impl Component for NewIngredientsForm {
         html! {
           <div class="container m-auto p-4">
             <h1>{"hit ehre"}</h1>
-
+            <button>{"Click me"}</button>
           </div>
         }
     }

@@ -1,10 +1,4 @@
-use crate::yew::InputData;
-use yew::{html, Children, Component, ComponentLink, Html, Properties, ShouldRender};
-
-#[derive(Clone)]
-enum InputTypes {
-    Text,
-}
+use yew::{html, Component, ComponentLink, Html, InputData, Properties, ShouldRender};
 
 pub struct Input {
     value: String,
@@ -47,14 +41,14 @@ impl Component for Input {
         html! {
             <div class="flex flex-col h-auto relative ">
                 <label
-                    for="search"
+                    for=&self.props.name
                     class="ml-2 mb-2 text-sm text-gray-600 dark:text-gray-400"
                 >
-                    {"Filter Ingredients"}
+                    {&self.props.label}
                 </label>
                 <input
-                    id="search"
-                    name="search"
+                    id=&self.props.name
+                    name=&self.props.name
                     class="px-2 py-2 border-2 rounded-md border-gray-200"
                     type="text"
                     value=&self.value

@@ -46,9 +46,9 @@ impl Component for NewIngredientsForm {
         let handle_change = &self.link.callback(|_: InputData| Msg::UpdateFormField);
 
         html! {
-            <div class="my-6">
+            <div class="my-6 w-full">
                 <h3 class="mb-4 pl-4">{"New Ingredient"}</h3>
-                <div class="flex mb-4 items-center space-x-2">
+                <div class="flex mb-4 items-center space-x-2 w-full">
                     <Input
                         name="name"
                         id="name"
@@ -72,7 +72,7 @@ impl Component for NewIngredientsForm {
                     input_type="textArea"
                     on_change=handle_change
                 />
-                <div class="flex mt-4 items-center space-x-2">
+                <div class="flex mt-4 items-center space-x-2 w-full">
                     <Input
                         name="name_scientific"
                         id="name_scientific"

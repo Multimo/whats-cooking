@@ -1,3 +1,4 @@
+use crate::components::styles::button_styles;
 use crate::components::Input;
 use crate::yew::InputData;
 use serde::Deserialize;
@@ -47,7 +48,7 @@ impl Component for NewIngredientsForm {
 
         html! {
             <div class="my-6 w-full">
-                <h3 class="mb-4 pl-4">{"New Ingredient"}</h3>
+                <h3 class="mb-4 pl-2">{"New Ingredient"}</h3>
                 <div class="flex mb-4 items-center space-x-2 w-full mt-2">
                     <Input
                         name="name"
@@ -88,7 +89,7 @@ impl Component for NewIngredientsForm {
                         on_change=handle_change
                     />
                 </div>
-                <button class="mt-4 pl-4">{"Submit"}</button>
+                <button class=button_styles>{"Submit"}</button>
             </div>
         }
     }

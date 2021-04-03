@@ -1,4 +1,4 @@
-use crate::components::{Ingredient, Input, NewIngredientsForm};
+use crate::components::{button_styles, Ingredient, Input, NewIngredientsForm};
 use serde::Deserialize;
 
 use yew::{
@@ -221,7 +221,7 @@ impl Component for IngredientsPage {
                         <>
                             <h1 class="text-red-600 ">{error}</h1>
                             <button
-                                class="mt-4 h-8 focus:outline-none text-white text-sm py-2.5 px-5 rounded-md bg-gradient-to-r from-blue-400 to-blue-600 transform hover:scale-110"
+                                class=button_styles
                                 onclick=self.link.callback(|_| Msg::FetchIngredients)
                             >
                                 {"Click to retry"}

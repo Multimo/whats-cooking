@@ -51,6 +51,7 @@ impl Component for NewIngredientsForm {
                 <h3 class="mb-4 pl-2">{"New Ingredient"}</h3>
                 <div class="flex mb-4 items-center space-x-2 w-full mt-2">
                     <Input
+                        class="w-1/2"
                         name="name"
                         id="name"
                         label="Ingredient name"
@@ -58,6 +59,7 @@ impl Component for NewIngredientsForm {
                         on_change=handle_change
                     />
                     <Input
+                        class="w-1/2"
                         name="group"
                         id="group"
                         label="Ingredient food group"
@@ -75,6 +77,7 @@ impl Component for NewIngredientsForm {
                 />
                 <div class="flex mt-4 items-center space-x-2 w-full">
                     <Input
+                        class="w-1/2"
                         name="name_scientific"
                         id="name_scientific"
                         label="Scientific name"
@@ -82,6 +85,7 @@ impl Component for NewIngredientsForm {
                         on_change=handle_change
                     />
                     <Input
+                        class="w-1/2"
                         name="food_subgroup"
                         id="food_subgroup"
                         label="Food Subgroup eg: herbs in herbs and spices"

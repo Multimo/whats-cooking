@@ -11,10 +11,12 @@ pub enum Msg {}
 pub struct Props {
     // #[prop_or_default]
     // pub children: Children,
-    pub id: String,
     pub name: String,
+    pub id: String,
     pub label: String,
     pub input_type: String,
+    #[prop_or_default]
+    pub class: Option<String>,
     pub on_change: yew::Callback<yew::InputData>,
 }
 
@@ -38,8 +40,12 @@ impl Component for Input {
     }
 
     fn view(&self) -> Html {
+        let class = match &self.props.class {
+            Some(c) => c,
+            None => "",
+        };
         html! {
-            <div class="flex flex-col h-auto relative ">
+            <div class={format!("flex flex-col h-auto relative {}", class)}>
                 <label
                     for=&self.props.name
                     class="ml-2 mb-2 text-sm text-gray-600 dark:text-gray-400"

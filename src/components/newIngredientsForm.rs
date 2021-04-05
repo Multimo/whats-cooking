@@ -48,7 +48,7 @@ impl Component for NewIngredientsForm {
 
         html! {
             <div class="my-6 w-full">
-                <h3 class="mb-4 pl-2">{"New Ingredient"}</h3>
+                <h3 class="mb-4 pl-2 uppercase tracking-wide text-sm text-indigo-600 font-bold">{"New Ingredient"}</h3>
                 <div class="flex mb-4 items-center space-x-2 w-full mt-2">
                     <Input
                         class="w-1/2"

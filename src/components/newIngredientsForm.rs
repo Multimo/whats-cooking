@@ -1,24 +1,34 @@
 use crate::components::styles::button_styles;
 use crate::components::Input;
 use crate::yew::InputData;
-use serde::Deserialize;
 use yew::{html, Children, Component, ComponentLink, Html, Properties, ShouldRender};
 
-#[derive(Deserialize, Debug)]
-pub struct IIngredient {
-    pub name: String,
-    pub decription: Option<String>,
-    pub food_group: Option<String>,
-    pub name_scientific: Option<String>,
-    pub food_subgroup: Option<String>,
+#[derive(Debug)]
+pub struct FormData {
+    name: String,
+    food_group: String,
+    decription: Option<String>,
+    name_scientific: Option<String>,
+    food_subgroup: Option<String>,
 }
 
 pub struct NewIngredientsForm {
     link: ComponentLink<Self>,
+    form_data: FormData,
+}
+
+#[derive(Copy, Clone)]
+pub enum FormFieldName {
+    Name,
+    Description,
+    FoodGroup,
+    NameScientific,
+    FoodSubgroup,
 }
 
 pub enum Msg {
-    UpdateFormField,
+    UpdateFormField(FormFieldName, String),
+    Submit,
 }
 
 #[derive(Properties, Clone)]
@@ -31,11 +41,30 @@ impl Component for NewIngredientsForm {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { link }
+    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self {
+            form_data: FormData {
+                name: String::from(""),
+                food_group: String::from(""),
+                food_subgroup: None,
+                decription: None,
+                name_scientific: None,
+            },
+            link,
+        }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::UpdateFormField(field_name, input_data) => match field_name {
+                FormFieldName::Name => self.form_data.name = input_data,
+                FormFieldName::FoodGroup => self.form_data.food_group = input_data,
+                FormFieldName::FoodSubgroup => self.form_data.food_subgroup = Some(input_data),
+                FormFieldName::Description => self.form_data.decription = Some(input_data),
+                FormFieldName::NameScientific => self.form_data.name_scientific = Some(input_data),
+            },
+            Msg::Submit => log::info!("data: {:?}", self.form_data),
+        }
         true
     }
 
@@ -44,7 +73,11 @@ impl Component for NewIngredientsForm {
     }
 
     fn view(&self) -> Html {
-        let handle_change = &self.link.callback(|_: InputData| Msg::UpdateFormField);
+        let handle_change = |field: FormFieldName| {
+            return self
+                .link
+                .callback(move |event: InputData| Msg::UpdateFormField(field, event.value));
+        };
 
         html! {
             <div class="my-6 w-full">
@@ -56,7 +89,7 @@ impl Component for NewIngredientsForm {
                         id="name"
                         label="Ingredient name"
                         input_type="text"
-                        on_change=handle_change
+                        on_change=handle_change(FormFieldName::Name)
                     />
                     <Input
                         class="w-1/2"
@@ -64,7 +97,7 @@ impl Component for NewIngredientsForm {
                         id="group"
                         label="Ingredient food group"
                         input_type="text"
-                        on_change=handle_change
+                        on_change=handle_change(FormFieldName::FoodGroup)
                     />
                 </div>
 
@@ -73,7 +106,7 @@ impl Component for NewIngredientsForm {
                     id="description"
                     label="Description"
                     input_type="textArea"
-                    on_change=handle_change
+                    on_change=handle_change(FormFieldName::Description)
                 />
                 <div class="flex mt-4 items-center space-x-2 w-full">
                     <Input
@@ -82,7 +115,7 @@ impl Component for NewIngredientsForm {
                         id="name_scientific"
                         label="Scientific name"
                         input_type="text"
-                        on_change=handle_change
+                        on_change=handle_change(FormFieldName::NameScientific)
                     />
                     <Input
                         class="w-1/2"
@@ -90,10 +123,10 @@ impl Component for NewIngredientsForm {
                         id="food_subgroup"
                         label="Food Subgroup eg: herbs in herbs and spices"
                         input_type="text"
-                        on_change=handle_change
+                        on_change=handle_change(FormFieldName::FoodSubgroup)
                     />
                 </div>
-                <button class=button_styles>{"Submit"}</button>
+                <button onclick=&self.link.callback(|_| Msg::Submit) class=button_styles>{"Submit"}</button>
             </div>
         }
     }

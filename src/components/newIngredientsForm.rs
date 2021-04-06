@@ -21,7 +21,7 @@ pub struct NewIngredientsForm {
 pub enum States {
     Initial,
     Invalid,
-    Sending,
+    Submitting,
     Success,
     Error,
 }
@@ -76,10 +76,30 @@ impl Component for NewIngredientsForm {
                         self.form_data.name_scientific = Some(input_data)
                     }
                 },
-                Msg::Submit => log::info!("data: {:?}", self.form_data),
+                Msg::Submit => {
+                    log::info!("data: {:?}", self.form_data);
+
+                    if self.form_data.name != "" || self.form_data.food_group != "" {
+                        self.state = States::Submitting
+                    } else {
+                        self.state = States::Invalid
+                    }
+                    // validate data
+                    // if valid do this
+                    // if invalid do
+                    // self.state = States::Invalid
+                }
             },
-            States::Sending => {}
-            States::Success => {}
+            States::Submitting => {}
+            States::Success => {
+                self.form_data = FormData {
+                    name: String::from(""),
+                    food_group: String::from(""),
+                    food_subgroup: None,
+                    decription: None,
+                    name_scientific: None,
+                }
+            }
         }
         true
     }

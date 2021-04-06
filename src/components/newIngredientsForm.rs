@@ -79,7 +79,7 @@ impl Component for NewIngredientsForm {
                 Msg::Submit => {
                     log::info!("data: {:?}", self.form_data);
 
-                    if self.form_data.name != "" || self.form_data.food_group != "" {
+                    if self.form_data.name != "" && self.form_data.food_group != "" {
                         self.state = States::Submitting
                     } else {
                         self.state = States::Invalid
@@ -90,7 +90,10 @@ impl Component for NewIngredientsForm {
                     // self.state = States::Invalid
                 }
             },
-            States::Submitting => {}
+            States::Submitting => {
+                self.state = States::Success;
+                self.link.send_message(Msg::Submit);
+            }
             States::Success => {
                 self.form_data = FormData {
                     name: String::from(""),
@@ -117,6 +120,13 @@ impl Component for NewIngredientsForm {
 
         html! {
             <div class="my-6 w-full">
+                <h1>{match &self.state {
+                    States::Initial => "Initial",
+                    States::Submitting => "Submitting",
+                    States::Invalid => "Invalid",
+                    States::Success => "Success",
+                    States::Error => "Error"
+                }}</h1>
                 <h3 class="mb-4 pl-2 uppercase tracking-wide text-sm text-indigo-600 font-bold">{"New Ingredient"}</h3>
                 <div class="flex mb-4 items-center space-x-2 w-full mt-2">
                     <Input

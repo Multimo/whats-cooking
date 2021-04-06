@@ -15,6 +15,15 @@ pub struct FormData {
 pub struct NewIngredientsForm {
     link: ComponentLink<Self>,
     form_data: FormData,
+    state: States,
+}
+
+pub enum States {
+    Initial,
+    Invalid,
+    Sending,
+    Success,
+    Error,
 }
 
 #[derive(Copy, Clone)]
@@ -43,6 +52,7 @@ impl Component for NewIngredientsForm {
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
+            state: States::Initial,
             form_data: FormData {
                 name: String::from(""),
                 food_group: String::from(""),
@@ -55,15 +65,21 @@ impl Component for NewIngredientsForm {
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::UpdateFormField(field_name, input_data) => match field_name {
-                FormFieldName::Name => self.form_data.name = input_data,
-                FormFieldName::FoodGroup => self.form_data.food_group = input_data,
-                FormFieldName::FoodSubgroup => self.form_data.food_subgroup = Some(input_data),
-                FormFieldName::Description => self.form_data.decription = Some(input_data),
-                FormFieldName::NameScientific => self.form_data.name_scientific = Some(input_data),
+        match self.state {
+            States::Initial | States::Invalid | States::Error => match msg {
+                Msg::UpdateFormField(field_name, input_data) => match field_name {
+                    FormFieldName::Name => self.form_data.name = input_data,
+                    FormFieldName::FoodGroup => self.form_data.food_group = input_data,
+                    FormFieldName::FoodSubgroup => self.form_data.food_subgroup = Some(input_data),
+                    FormFieldName::Description => self.form_data.decription = Some(input_data),
+                    FormFieldName::NameScientific => {
+                        self.form_data.name_scientific = Some(input_data)
+                    }
+                },
+                Msg::Submit => log::info!("data: {:?}", self.form_data),
             },
-            Msg::Submit => log::info!("data: {:?}", self.form_data),
+            States::Sending => {}
+            States::Success => {}
         }
         true
     }

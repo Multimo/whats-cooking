@@ -84,6 +84,8 @@ impl Component for NewIngredientsForm {
                     } else {
                         self.state = States::Invalid
                     }
+
+                    self.link.send_message(Msg::Submit);
                     // validate data
                     // if valid do this
                     // if invalid do
@@ -120,7 +122,7 @@ impl Component for NewIngredientsForm {
 
         html! {
             <div class="my-6 w-full">
-                <h1>{match &self.state {
+                <h1 class="ml-2">{match &self.state {
                     States::Initial => "Initial",
                     States::Submitting => "Submitting",
                     States::Invalid => "Invalid",

@@ -1,6 +1,5 @@
 use crate::components::{button_styles, Ingredient, Input, NewIngredientsForm};
 use serde::Deserialize;
-
 use yew::{
     format::{Json, Nothing},
     html,

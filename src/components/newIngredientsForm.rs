@@ -110,6 +110,7 @@ impl Component for NewIngredientsForm {
                     // if invalid do
                     // self.state = States::Invalid
                 }
+                _ => {}
             },
             States::Submitting => match msg {
                 Msg::Submit => {
@@ -117,7 +118,7 @@ impl Component for NewIngredientsForm {
                     log::info!("sending post request");
                     let request = Request::post("http://localhost:8082/ingredients")
                         .header("Content-Type", "application/json")
-                        .body(Json(self.form_data))
+                        .body(Json(&self.form_data))
                         .expect("Could not build request.");
                     // 2. construct a callback
                     let callback = self.link.callback(

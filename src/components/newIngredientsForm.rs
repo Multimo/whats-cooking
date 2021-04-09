@@ -53,6 +53,7 @@ pub enum States {
 pub enum Msg {
     UpdateFormField(FormFieldName, String),
     Submit,
+    StartSubmit,
     SubmitSuccess,
     SubmitError(anyhow::Error),
 }
@@ -104,7 +105,7 @@ impl Component for NewIngredientsForm {
                     }
 
                     // returning same event so that it triggers next event
-                    self.link.send_message(Msg::Submit);
+                    self.link.send_message(Msg::StartSubmit);
                     // validate data
                     // if valid do this
                     // if invalid do
@@ -113,7 +114,7 @@ impl Component for NewIngredientsForm {
                 _ => {}
             },
             States::Submitting => match msg {
-                Msg::Submit => {
+                Msg::StartSubmit => {
                     // do the fetch
                     log::info!("sending post request");
                     let request = Request::post("http://localhost:8082/ingredients")
@@ -126,7 +127,7 @@ impl Component for NewIngredientsForm {
                             let Json(data) = response.into_body();
                             // log::info!("got data {:?}", data);
                             match data {
-                                Ok(data) => Msg::SubmitSuccess,
+                                Ok(_) => Msg::SubmitSuccess,
                                 Err(error) => Msg::SubmitError(error),
                             }
                         },
@@ -139,6 +140,8 @@ impl Component for NewIngredientsForm {
                     // we want to redraw so that the page displays a 'fetching...' message to the user
                     // so return 'true'
                 }
+                Msg::SubmitSuccess => self.state = States::Success,
+                Msg::SubmitError(error) => self.state = States::Error(error),
                 _ => {}
             },
             States::Success => {

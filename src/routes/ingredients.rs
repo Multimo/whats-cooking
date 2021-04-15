@@ -194,6 +194,7 @@ impl Component for IngredientsPage {
                     .map(|ingredient: &IIngredient| {
                         html! {
                             <Ingredient
+                                id={ingredient.id}
                                 key={ingredient.id}
                                 name=&ingredient.name
                                 group=match &ingredient.food_group {

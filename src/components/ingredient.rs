@@ -164,7 +164,7 @@ impl Component for Ingredient {
                   </div>
                   {match &self.is_open {
                       true => html! {
-                          <div class="mt-2 space-y-1">
+                          <div class="mt-2 space-y-1 flex">
                               <div>
                                   <p>{"type: "}{&self.props.group}</p>
                                   <p>{"description: "}{match &self.props.description {
@@ -174,7 +174,7 @@ impl Component for Ingredient {
                               </div>
                               {match &self.state {
                                   States::Initial => html! {
-                                      <button onclick=&self.link.callback(|_| Msg::DeleteIngredient)>{"❌"}</button>
+                                      <button class="flex" onclick=&self.link.callback(|_| Msg::DeleteIngredient)>{"❌"}</button>
                                   },
                                   States::Deleting | States::Deleted => html! {
                                       <div>{'🍤'}</div>

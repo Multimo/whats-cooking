@@ -146,7 +146,7 @@ impl Component for Ingredient {
             "Coffee and coffee products" => "☕",
             _ => "❌",
         };
-
+  
         return match &self.state {
             States::Initial | States::Deleting => html! {
                 <div class="container flex flex-col m-auto p-2" >

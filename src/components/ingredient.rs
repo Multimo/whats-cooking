@@ -1,3 +1,4 @@
+use crate::components::Modal;
 use serde::Deserialize;
 use yew::format::Json;
 use yew::format::Nothing;
@@ -17,6 +18,7 @@ pub struct Ingredient {
 
 pub enum States {
     Initial,
+    ConfirmingDelete,
     Deleting,
     Deleted,
 }
@@ -29,6 +31,8 @@ struct DeleteResponse {
 #[derive(PartialEq)]
 pub enum Msg {
     Toggle,
+    AttemptConfirmation,
+    DeleteConfirmationCanceled,
     DeleteIngredient,
     DeleteSuccess,
     DeleteError,
@@ -65,6 +69,11 @@ impl Component for Ingredient {
         }
         match self.state {
             States::Initial => match msg {
+                Msg::AttemptConfirmation => self.state = States::ConfirmingDelete,
+                _ => {}
+            },
+            States::ConfirmingDelete => match msg {
+                Msg::DeleteConfirmationCanceled => self.state = States::Initial,
                 Msg::DeleteIngredient => {
                     log::info!("deleting ingredients: {}", self.props.id);
                     let request = Request::delete(format!(
@@ -91,12 +100,6 @@ impl Component for Ingredient {
                     // we want to redraw so that the page displays a 'fetching...' message to the user
                     // so return 'true'
                     self.state = States::Deleting;
-                }
-                Msg::DeleteSuccess => {
-                    self.state = States::Deleted;
-                }
-                Msg::DeleteError => {
-                    self.state = States::Initial;
                 }
                 _ => {}
             },
@@ -147,7 +150,7 @@ impl Component for Ingredient {
             _ => "❌",
         };
         return match &self.state {
-            States::Initial | States::Deleting => html! {
+            States::Initial | States::Deleting | States::ConfirmingDelete => html! {
                 <div class="container flex flex-col m-auto p-2" >
                   <div class="flex justify-between">
                       <div class="flex">
@@ -173,7 +176,15 @@ impl Component for Ingredient {
                               </div>
                               {match &self.state {
                                   States::Initial => html! {
-                                      <button class="flex" title="delete" onclick=&self.link.callback(|_| Msg::DeleteIngredient)>{"❌"}</button>
+                                      <button class="flex" title="delete" onclick=&self.link.callback(|_| Msg::AttemptConfirmation)>{"❌"}</button>
+                                  },
+                                  States::ConfirmingDelete => html! {
+                                    <Modal
+                                        title={String::from("Hold up!")}
+                                        description={format!("Are you sure you want to delete the ingredient {}?", &self.props.name)}
+                                        on_cancel=&self.link.callback(move |_| Msg::DeleteConfirmationCanceled)
+                                        on_confirm=&self.link.callback(move |_| Msg::DeleteIngredient)
+                                    />
                                   },
                                   States::Deleting | States::Deleted => html! {
                                       <div>{'🍤'}</div>

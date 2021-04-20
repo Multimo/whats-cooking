@@ -146,7 +146,6 @@ impl Component for Ingredient {
             "Coffee and coffee products" => "☕",
             _ => "❌",
         };
-  
         return match &self.state {
             States::Initial | States::Deleting => html! {
                 <div class="container flex flex-col m-auto p-2" >
@@ -164,7 +163,7 @@ impl Component for Ingredient {
                   </div>
                   {match &self.is_open {
                       true => html! {
-                          <div class="mt-2 space-y-1 flex">
+                          <div class="mt-2 space-y-1 flex justify-between">
                               <div>
                                   <p>{"type: "}{&self.props.group}</p>
                                   <p>{"description: "}{match &self.props.description {
@@ -174,7 +173,7 @@ impl Component for Ingredient {
                               </div>
                               {match &self.state {
                                   States::Initial => html! {
-                                      <button class="flex" onclick=&self.link.callback(|_| Msg::DeleteIngredient)>{"❌"}</button>
+                                      <button class="flex" title="delete" onclick=&self.link.callback(|_| Msg::DeleteIngredient)>{"❌"}</button>
                                   },
                                   States::Deleting | States::Deleted => html! {
                                       <div>{'🍤'}</div>

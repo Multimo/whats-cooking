@@ -1,15 +1,16 @@
+use crate::components::Modal;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
-pub struct RecipesPage {}
-
-pub enum Msg {}
+pub struct RecipesPage {
+    link: ComponentLink<Self>,
+}
 
 impl Component for RecipesPage {
-    type Message = Msg;
+    type Message = ();
     type Properties = ();
 
-    fn create(_props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self {}
+    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self { link }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
@@ -37,6 +38,11 @@ impl Component for RecipesPage {
                 <div class="md:flex">
                     <button>{"Hello"}</button>
                 </div>
+                <Modal
+                    title={String::from("Hold up!")}
+                    description={String::from("Are you sure you want to delete this ingredient?")}
+                    on_confirm=&self.link.callback(move |_| log::info!("hello there"))
+                />
             </div>
         }
     }

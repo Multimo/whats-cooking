@@ -30,7 +30,7 @@ impl Component for Modal {
 
     fn view(&self) -> Html {
         html! {
-        <div class="absolute inset-0 flex justify-center items-center w-screen h-screen bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
+        <div class="fixed inset-0 flex justify-center items-center w-screen h-screen bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
             <div class="md:w-1/3 sm:w-full rounded-lg shadow-lg bg-white my-3 px-4 p-2">
                 <div class="flex justify-between border-b border-gray-100 py-4">
                   <div>

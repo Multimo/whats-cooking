@@ -1,3 +1,4 @@
+use crate::components::NewRecipesForm;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 pub struct RecipesPage {
@@ -36,6 +37,10 @@ impl Component for RecipesPage {
                 </div>
                 <div class="md:flex">
                     <button>{"Hello"}</button>
+                </div>
+
+                <div class="flex">
+                    <NewRecipesForm />
                 </div>
             </div>
         }

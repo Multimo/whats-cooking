@@ -1,4 +1,4 @@
-use yew::{html, Component, ComponentLink, Html, InputData, Properties, ShouldRender};
+use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
 
 pub struct Input {
     value: String,
@@ -14,6 +14,7 @@ pub struct Props {
     pub name: String,
     pub id: String,
     pub label: String,
+    #[prop_or(String::from("text"))]
     pub input_type: String,
     #[prop_or_default]
     pub class: Option<String>,
@@ -56,7 +57,7 @@ impl Component for Input {
                     id=&self.props.name
                     name=&self.props.name
                     class="px-2 py-2 border-2 rounded-md border-gray-200"
-                    type="text"
+                    type=&self.props.input_type
                     value=&self.value
                     oninput=&self.props.on_change />
             </div>
